@@ -9,7 +9,7 @@ a small guess the count game, with some solutions for :
   while namen.ends_with('\n') || namen.ends_with('\r') {
 		namen.pop();
     
-2. restart the program (like in the goo old basic time with goto ....)
+2. restart the program (like in the good old basic time with goto ....)
 
 		println!("Spiel neu starten mit neuem Spieler (schreibe 'ja', ansonsten [enter] für gleichen Spieler) ?");
 		io::stdin()
