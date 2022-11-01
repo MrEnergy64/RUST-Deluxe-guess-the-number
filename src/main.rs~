@@ -1,0 +1,30 @@
+use std::{thread, time, io};
+
+
+fn main() {
+    let ten_millis = time::Duration::from_millis(1000);
+    let mut namen = String::new();
+    print!("{}[2J", 27 as char);
+    println!("Hello, Player! What is your name?");
+    io::stdin()
+        .read_line(&mut namen)
+        .expect("Fehler beim Lesen der Zeile");
+
+    // for n in ["N", "O", "R", "M", "A", "N"]
+    //{
+    //    println!("{: >15}", n);
+    //    thread::sleep(ten_millis);
+    //}
+    //let liebt = "liebt";
+    //println!("{: >17}", liebt);
+    //for n in ["S", "A", "N", "D", "R", "A"]
+    //{
+    //    println!("{: >15}", n);
+    //    thread::sleep(ten_millis);
+    //}
+    println!("Hello {}", namen);
+    println!("lass uns ein Spiel spielen\n");
+    thread::sleep(ten_millis);
+
+}
+

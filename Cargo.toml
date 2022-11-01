@@ -1,0 +1,17 @@
+[package]
+name = "my_first_rust"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies.rand]
+version = "0.8.3"
+
+[dependencies.cursive]
+version = "0.20.0"
+default-features = false
+features = ["blt-backend"]
+
+
+
