@@ -1,7 +1,7 @@
 # my_first_rust
 my first RUST experience
 
-a small guess the count game, with some solutions for :
+a small guess the digit game, with some solutions for :
 1. Clear screen
   print!("{}[2J", 27 as char);
   
