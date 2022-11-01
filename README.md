@@ -10,12 +10,11 @@ a small guess the count game, with some solutions for :
 		namen.pop();
     
 2. restart the program (like in the goo old basic time with goto ....)
-  } else {
+
 		println!("Spiel neu starten mit neuem Spieler (schreibe 'ja', ansonsten [enter] für gleichen Spieler) ?");
 		io::stdin()
 			.read_line(&mut neuer)
 	    	.expect("Fehler beim Lesen der Zeile");
-
 		if neuer.trim() == "ja" {
 			main();
 		} else {
