@@ -23,4 +23,11 @@ a small "guess the digit game", with some solutions for :
 			eingabe_zahlen(namen);
 		}
 
-4. create a lib.rs and put some fn into it like clear screen, set color and pause, and then import it into the main.rs
+4. use escape sequences for screen position:
+	
+	pub fn mv_point(line: usize, col: usize) {
+		print!("\x1b[{};{}H", col, line);
+
+	} // end of mv_point()
+
+5. create a lib.rs and put some fn into it like clear screen, set color and pause, and then import it into the main.rs
