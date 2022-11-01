@@ -1,7 +1,9 @@
-# my_first_rust
+# my_first_rust - a little guess the digit game
+
 my first RUST experience
 
-a small guess the digit game, with some solutions for :
+a small "guess the digit game", with some solutions for :
+
 1. Clear screen
   print!("{}[2J", 27 as char);
   
@@ -9,7 +11,7 @@ a small guess the digit game, with some solutions for :
   while namen.ends_with('\n') || namen.ends_with('\r') {
 		namen.pop();
     
-2. restart the program (like in the good old basic time with goto ....)
+3. restart the program (like in the good old basic time with goto ....)
 
 		println!("Spiel neu starten mit neuem Spieler (schreibe 'ja', ansonsten [enter] für gleichen Spieler) ?");
 		io::stdin()
@@ -20,3 +22,5 @@ a small guess the digit game, with some solutions for :
 		} else {
 			eingabe_zahlen(namen);
 		}
+
+4. create a lib.rs and put some fn into it like clear screen, set color and pause, and then import it into the main.rs
