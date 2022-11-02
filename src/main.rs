@@ -1,4 +1,5 @@
-use std::{io::{self}};
+
+use std::io::{self, Write};
 use rand::Rng;
 extern crate rand;
 mod lib;
@@ -32,11 +33,12 @@ fn willkommen() {
 fn eingabe_namen() {
 	
 	let mut namen = String::new();
-
-	println!("     Hallo, \x1b[94mSpieler\x1b[0m! Wie ist dein Name?\n");
-	io::stdin()
+	print!("     Hallo, \x1b[94mSpieler\x1b[0m! Wie ist dein Name?\n\n     Name: ");
+	let _ = io::stdout().flush();	
+	 io::stdin()
 		.read_line(&mut namen)
 		.expect("Fehler beim Lesen der Zeile");
+	
 	while namen.ends_with('\n') || namen.ends_with('\r') {
 		namen.pop();
 	}
@@ -49,8 +51,6 @@ fn eingabe_zahlen(namen: String) {
 	lib::clear_screen();
 	lib::mv_point(0,0);
 
-	
-	let mut guess = String::new();
 
 	const GAMING: &str = " 	
    	*****************************
@@ -80,8 +80,9 @@ fn eingabe_zahlen(namen: String) {
 	println!("{}", RATEN);
 	lib::set_color("reset");
 
- 	println!("\x1b[94m{}\x1b[0m, bitte gib deine Zahl zwischen 1-10 ein: \n", namen);
-
+	let mut guess = String::new();
+ 	print!("\x1b[94m{}\x1b[0m, bitte gib deine Zahl zwischen 1-10 ein.\n\n           => : ", namen);
+	let _ = io::stdout().flush();
  	io::stdin()
 		.read_line(&mut guess)
 	 	.expect("Fehler beim Lesen der Zeile");
@@ -95,7 +96,7 @@ fn zahlenspiel(x: &str, namen: String) {
 	let secret_number = rand::thread_rng().gen_range(1..11);
 	
 	let secret_number2 = secret_number.to_string();
-	println!("\nDie zu erratende Zahl war: \x1b[93m{}\x1b[0m, deine Zahl ist: \x1b[93m{}\x1b[0m\n", secret_number2, x);
+	
 	if x.trim() == secret_number2 {
 
 		lib::clear_screen();
@@ -111,8 +112,9 @@ fn zahlenspiel(x: &str, namen: String) {
  		lib::set_color("green");
 		println!("{}", WINNER);
 		lib::set_color("reset");
-
+		
 		println!("\x1B[3m     *** Juhuu, \x1b[94m{}\x1b[0m\x1B[3m, du hast gewonnen!! :-) ***\n\x1b[0m", namen);
+		println!("     Die zu erratende Zahl war: \x1b[93m{}\x1b[0m, deine Zahl ist: \x1b[93m{}\x1b[0m\n", secret_number2, x);
 		lib::pause(1000);
 
 		nochmal(namen);
@@ -131,8 +133,9 @@ fn zahlenspiel(x: &str, namen: String) {
  		lib::set_color("cyan");
 		println!("{}", LOSER);
 		lib::set_color("reset");
-
+		
 		println!("\x1B[3m     >> Schade, \x1b[94m{}\x1b[0m\x1B[3m, du hast leider verloren. :-( <<\n\x1b[0m", namen);
+		println!("     Die zu erratende Zahl war: \x1b[93m{}\x1b[0m, deine Zahl ist: \x1b[93m{}\x1b[0m\n", secret_number2, x);
 		lib::pause(1000);
 
 		nochmal(namen);
