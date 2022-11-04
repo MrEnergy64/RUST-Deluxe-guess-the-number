@@ -1,4 +1,5 @@
 
+// use std::{io::{self, Write}, cmp::Ordering, cell::SyncUnsafeCell};
 use std::io::{self, Write};
 use rand::Rng;
 extern crate rand;
@@ -19,11 +20,11 @@ fn willkommen() {
    	*****************************
    	*    W I L L K O M M E N    *
    	*                           *
-   	* (c) Norman Woeske         *
-   	*****************************\n";
+   	* (c) Norman Wöske     V1.1 *
+   	*****************************";
 
 	lib::set_color("yellow");
-	println!("{}", WILLKOMMEN);
+	println!("{}\n", WILLKOMMEN);
 	lib::set_color("reset");
 
 	eingabe_namen();
@@ -42,11 +43,11 @@ fn eingabe_namen() {
 	while namen.ends_with('\n') || namen.ends_with('\r') {
 		namen.pop();
 	}
-	eingabe_zahlen(namen);
+	gaming_time(namen);
 
 } // end of eingabe_namen()
 
-fn eingabe_zahlen(namen: String) {
+fn gaming_time(namen: String) {
 
 	lib::clear_screen();
 	lib::mv_point(0,0);
@@ -56,90 +57,34 @@ fn eingabe_zahlen(namen: String) {
    	*****************************
    	*    G A M I N G  T I M E   *
    	*                           *
-   	* (c) Norman Woeske         *
-   	*****************************\n";
+   	*                           *
+   	*****************************";
 
 	lib::set_color("yellow");
-	println!("{}", GAMING);
+	println!("{}\n", GAMING);
 	lib::set_color("reset");
 
  	println!("\n     Hallo \x1b[94m{}\x1b[0m, lass uns ein Spiel spielen...\n", namen);
- 	lib::pause(2000);
-
-	lib::clear_screen();
-	lib::mv_point(0,0);
-
-	const RATEN: &str = "
-	*****************************
- 	*       Rate die Zahl!      *
- 	*                           *
-	* (c) Norman Woeske         *
- 	*****************************\n";
-
- 	lib::set_color("green");
-	println!("{}", RATEN);
-	lib::set_color("reset");
-
-	let mut guess = String::new();
- 	print!("\x1b[94m{}\x1b[0m, bitte gib deine Zahl zwischen 1-10 ein.\n\n           => : ", namen);
-	let _ = io::stdout().flush();
- 	io::stdin()
-		.read_line(&mut guess)
-	 	.expect("Fehler beim Lesen der Zeile");
-
-	zahlenspiel(&guess, namen);
-
-} //end of eingabe_zahlen()
-
-fn zahlenspiel(x: &str, namen: String) {
+ 	
+	for x in 1..4 {
+		println!("        {}...",x);
+		lib::pause(2000);
+	}
 	
-	let secret_number = rand::thread_rng().gen_range(1..11);
+
+	 zahlenspiel(namen);
+	
+} //end of gaming_time()
+
+fn zahlenspiel(namen: String) {
+	let zaehler: i32 = 0;
+
+	let secret_number = rand::thread_rng().gen_range(1..101);
 	
 	let secret_number2 = secret_number.to_string();
-	
-	if x.trim() == secret_number2 {
 
-		lib::clear_screen();
-	 	lib::mv_point(0,0);
+	zahlen_eingabe(secret_number2, namen, zaehler);
 
-		const WINNER: &str = "
-		*****************************
- 		*    !!   GEWINNER   !!     *
- 		*                           *
-		* (c) Norman Woeske         *
- 		*****************************\n";
-
- 		lib::set_color("green");
-		println!("{}", WINNER);
-		lib::set_color("reset");
-		
-		println!("\x1B[3m     *** Juhuu, \x1b[94m{}\x1b[0m\x1B[3m, du hast gewonnen!! :-) ***\n\x1b[0m", namen);
-		println!("     Die zu erratende Zahl war: \x1b[93m{}\x1b[0m, deine Zahl ist: \x1b[93m{}\x1b[0m\n", secret_number2, x);
-		lib::pause(1000);
-
-		nochmal(namen);
-	} else {
-
-		lib::clear_screen();
-	 	lib::mv_point(0,0);
-
-		const LOSER: &str = "
-		*****************************
- 		*    !!   VERLOREN   !!     *
- 		*                           *
-		* (c) Norman Woeske         *
- 		*****************************\n";
-
- 		lib::set_color("cyan");
-		println!("{}", LOSER);
-		lib::set_color("reset");
-		
-		println!("\x1B[3m     >> Schade, \x1b[94m{}\x1b[0m\x1B[3m, du hast leider verloren. :-( <<\n\x1b[0m", namen);
-		println!("     Die zu erratende Zahl war: \x1b[93m{}\x1b[0m, deine Zahl ist: \x1b[93m{}\x1b[0m\n", secret_number2, x);
-		lib::pause(1000);
-
-		nochmal(namen);
-	}
 } // end of zahlenspiel()
 
 fn nochmal(namen: String) {
@@ -165,7 +110,131 @@ fn nochmal(namen: String) {
 		if neuer.trim() == "ja" {
 			main();
 		} else {
-			eingabe_zahlen(namen);
+			gaming_time(namen);
 		}
    	}
 } //end of nochmal()
+
+fn auswertung(secret_number2: String, guess: String, namen: String, zaehler: i32) {
+
+	lib::clear_screen();
+	lib::mv_point(0,0);
+
+	const AUSWERTUNG: &str = "
+	*****************************
+ 	*    A U S W E R T U N G    *
+ 	*                           *
+	*                           *
+ 	*****************************";
+
+
+ 	lib::set_color("green");
+	println!("{}\n", AUSWERTUNG);
+	lib::set_color("reset");
+
+	if zaehler == 10 {
+		looser(secret_number2, guess, namen);
+	} else {
+		let secret_int: u32 = secret_number2
+		.trim()
+		.parse()
+		.expect("Wanted a number");
+
+		let guess_int: u32 = guess
+		.trim()
+		.parse()
+		.expect("Wanted a number"); 
+	
+		if guess_int > secret_int {
+			println!("Deine Zahl {} ist größer als die Geheimzahl, rate weiter....\n", guess);
+			lib::pause(3000);
+			let zaehler = zaehler + 1;
+			zahlen_eingabe(secret_number2, namen, zaehler);
+		} else if  guess_int < secret_int {
+			println!("Deine Zahl {} ist kleiner als die Geheimzahl, rate weiter....\n", guess);
+			lib::pause(3000);
+			let zaehler = zaehler + 1;
+			zahlen_eingabe(secret_number2, namen, zaehler);
+		} else {
+			winner(secret_number2, namen, zaehler);
+		}
+	}	
+} // end of auswertung()
+
+fn zahlen_eingabe(secret_number2: String, namen: String, zaehler: i32) {
+	lib::clear_screen();
+	lib::mv_point(0,0);
+	
+	const RATEN: &str = "
+	*****************************
+ 	*       Rate die Zahl!      *
+ 	*                           *
+	*                           *
+ 	*****************************";
+
+ 	lib::set_color("green");
+	println!("{}\n", RATEN);
+	lib::set_color("cyan");
+	println!("            Rateversuch {} von 10...\n", zaehler);
+	lib::set_color("reset");
+
+	let mut guess = String::new();
+ 	print!("\x1b[94m{}\x1b[0m, bitte gib deine Zahl zwischen 1-100 ein.\n\n           => : ", namen);
+	let _ = io::stdout().flush();
+ 	io::stdin()
+		.read_line(&mut guess)
+	 	.expect("Fehler beim Lesen der Zeile");
+	
+	while guess.ends_with('\n') || guess.ends_with('\r') {
+		guess.pop();
+	}
+
+	auswertung(secret_number2, guess, namen, zaehler);
+
+} // end of zahlen_eingabe()
+
+fn winner(secret_number2: String, namen: String, zaehler: i32) {
+	lib::clear_screen();
+	lib::mv_point(0,0);
+
+	const WINNER: &str = "
+	*****************************
+	*    !!   GEWINNER   !!     *
+	*                           *
+	*                           *
+	*****************************";
+
+	lib::set_color("green");
+	println!("{}\n", WINNER);
+	lib::set_color("reset");
+
+	println!("\x1B[3m     *** Juhuu, \x1b[94m{}\x1b[0m\x1B[3m, du hast gewonnen!! :-) ***\n\x1b[0m", namen);
+	println!("     Die zu erratende Zahl war: \x1b[93m{}\x1b[0m, und in \x1b[93m{}\x1b[0m Versuch(e) erraten.\n", secret_number2, zaehler);
+	lib::pause(1000);
+
+	nochmal(namen);
+
+} //end of winner
+
+fn looser(secret_number2: String, x: String, namen: String) {
+	lib::clear_screen();
+	lib::mv_point(0,0);
+
+	const LOSER: &str = "
+	*****************************
+	*    !!   VERLOREN   !!     *
+	*                           *
+	*                           *
+	*****************************";
+
+	lib::set_color("cyan");
+	println!("{}\n", LOSER);
+	lib::set_color("reset");
+	
+	println!("\x1B[3m     >> Schade, \x1b[94m{}\x1b[0m\x1B[3m, du hast leider verloren. :-( <<\n\x1b[0m", namen);
+	println!("     Die zu erratende Zahl war: \x1b[93m{}\x1b[0m, deine Zahl ist: \x1b[93m{}\x1b[0m\n", secret_number2, x);
+	lib::pause(1000);
+
+	nochmal(namen);
+
+} //end of looser()
