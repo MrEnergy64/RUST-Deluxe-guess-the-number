@@ -5,7 +5,8 @@ pub fn set_color(c: &str) {
 		"red"		=> print!("\x1b[31m"),
 		"green"		=> print!("\x1b[32m"),
 		"yellow"	=> print!("\x1b[33m"),
-		"cyan"		=> print!("\x1b[34m"),
+		"cyan"		=> print!("\x1b[36m"),
+		"magenta"	=> print!("\x1b[35m"),
 		"reset"		=> print!("\x1b[0m"),
 		_           => print!("{} is an invalid color ", c),
 	}
