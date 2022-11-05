@@ -38,4 +38,8 @@ a small "guess the number" game, with some RUST solutions for :
 and then import it into the main.rs:
 	- mod lib.rs
 
-
+6. add formatet time and date:
+fn uhrzeit() {
+	- let now: DateTime<Local> = Local::now();
+		- println!("	{}", now.format("%a - %e %b %Y  - %T\n"));
+	- } // end of uhrzeit()
