@@ -27,7 +27,7 @@ a small "guess the number" game, with some RUST solutions for :
 4. use escape sequences for screen position print out:
 	- pub fn mv_point(line: usize, col: usize) {
 		- print!("\x1b[{};{}H", col, line);
-		- } // end of mv_point()
+	- } // end of mv_point()
 
 5. create a lib.rs and put some fn into it like:
 	- clear_screen()
@@ -41,5 +41,6 @@ and then import it into the main.rs:
 6. add formatet time and date:
 	-fn uhrzeit() {
 		- let now: DateTime<Local> = Local::now();
-			- println!("	{}", now.format("%a - %e %b %Y  - %T\n"));
-		- } // end of uhrzeit()
+		- println!("	{}", now.format("%a - %e %b %Y  - %T\n"));
+	- } // end of uhrzeit()
+	
