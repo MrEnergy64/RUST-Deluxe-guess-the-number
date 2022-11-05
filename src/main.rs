@@ -66,6 +66,7 @@ fn gaming_time(namen: String) {
 
  	println!("\n     Hallo \x1b[94m{}\x1b[0m, lass uns ein Spiel spielen...\n", namen);
  	
+	print!("     Bei 3 geht es los....\n");
 	for x in 1..4 {
 		println!("        {}...",x);
 		lib::pause(2000);
@@ -77,7 +78,7 @@ fn gaming_time(namen: String) {
 } //end of gaming_time()
 
 fn zahlenspiel(namen: String) {
-	let zaehler: i32 = 0;
+	let zaehler: i32 = 1;
 
 	let secret_number = rand::thread_rng().gen_range(1..101);
 	
