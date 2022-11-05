@@ -39,7 +39,7 @@ and then import it into the main.rs:
 	- mod lib.rs
 
 6. add formatet time and date:
-fn uhrzeit() {
-	- let now: DateTime<Local> = Local::now();
-		- println!("	{}", now.format("%a - %e %b %Y  - %T\n"));
-	- } // end of uhrzeit()
+	-fn uhrzeit() {
+		- let now: DateTime<Local> = Local::now();
+			- println!("	{}", now.format("%a - %e %b %Y  - %T\n"));
+		- } // end of uhrzeit()
