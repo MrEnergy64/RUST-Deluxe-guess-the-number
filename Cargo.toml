@@ -13,5 +13,6 @@ version = "0.20.0"
 default-features = false
 features = ["blt-backend"]
 
-
+[dependencies.chrono]
+version = "0.4"
 
