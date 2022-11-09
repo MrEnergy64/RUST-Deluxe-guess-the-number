@@ -55,5 +55,13 @@ and then import it into the main.rs:
 		- lib::set_color("reset");
 	
 
+![guess-the-number-welcome](https://user-images.githubusercontent.com/58075655/200954595-b85cbab8-c640-47a5-8690-b4958023265b.png)
 
+![guess-the-number-zahl](https://user-images.githubusercontent.com/58075655/200954656-1ffdfe28-89d5-4d00-9178-80e136cab23c.png)
+
+![guess-the-number-auswertung](https://user-images.githubusercontent.com/58075655/200954707-d445c9a9-13de-4f23-a5b5-342bf5230363.png)
+
+![guess-the-number-winner](https://user-images.githubusercontent.com/58075655/200954741-fbbb8aed-177e-48f1-b981-6aabf1c8688e.png)
+
+	
 	
