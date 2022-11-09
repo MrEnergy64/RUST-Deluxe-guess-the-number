@@ -44,3 +44,16 @@ and then import it into the main.rs:
 		- println!("	{}", now.format("%a - %e %b %Y  - %T\n"));
 	- } // end of uhrzeit()
 	
+7. repeat a string:
+
+	- fn rahmen() {
+
+		- let str1 = "=";
+		- let str2 = "|";
+		- lib::set_color("green");
+		- println!("\n{}{}{}", str2.repeat(1), str1.repeat(44), str2.repeat(1));
+		- lib::set_color("reset");
+	
+
+
+	
