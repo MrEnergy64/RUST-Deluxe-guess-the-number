@@ -21,7 +21,7 @@ fn rahmen() {
 	let str1 = "=";
 	let str2 = "|";
 	lib::set_color("green");
-	println!("\n{}{}{}", str2.repeat(1), str1.repeat(44), str2.repeat(1));
+	println!("\n{}{}{}\n", str2.repeat(1), str1.repeat(44), str2.repeat(1));
 	lib::set_color("reset");
 }  
 
@@ -34,7 +34,7 @@ fn willkommen() {
    	*****************************
    	*    W I L L K O M M E N    *
    	*                           *
-   	* (c) Norman Wöske     V1.3 *
+   	* (c) Norman Wöske     V1.4 *
    	*****************************";
 	
 	rahmen();
@@ -87,9 +87,11 @@ fn gaming_time(namen: String) {
 	rahmen();
  	println!("     Hallo \x1b[94m{}\x1b[0m, lass uns ein Spiel spielen...\n", namen);
  	
-	print!("     Bei 3 geht es los....\n");
-	for x in 1..4 {
-		println!("        {}...",x);
+	print!("     Bei 3 geht es los.... ");
+	let warten = ["1", "2", "3"];
+	for x in 0..3 {
+		print!("{} ", warten[x]);
+		io::stdout().flush().unwrap();
 		lib::pause(1500);
 	}
 	
@@ -163,7 +165,7 @@ fn auswertung(secret_number2: String, guess: String, namen: String, zaehler: i32
 	uhrzeit();
 	rahmen();
 
-	if zaehler == 10 {
+	if zaehler >= 10 {
 		looser(secret_number2, guess, namen);
 	} else {
 		let secret_int: u32 = secret_number2
@@ -177,13 +179,23 @@ fn auswertung(secret_number2: String, guess: String, namen: String, zaehler: i32
 		.expect("Wanted a number"); 
 	
 		if guess_int > secret_int {
-			println!("\nDeine Zahl {} ist größer als die Geheimzahl, rate weiter....\n", guess);
-			lib::pause(3000);
+			print!("\nDeine Zahl {} ist größer als die Geheimzahl, rate weiter ", guess);
+			let warten = [".", ".", "."];
+			for x in 0..3 {
+				print!("{} ", warten[x]);
+				io::stdout().flush().unwrap();
+				lib::pause(800);
+			}
 			let zaehler = zaehler + 1;
 			zahlen_eingabe(secret_number2, namen, zaehler);
 		} else if  guess_int < secret_int {
-			println!("\nDeine Zahl {} ist kleiner als die Geheimzahl, rate weiter....\n", guess);
-			lib::pause(3000);
+			print!("\nDeine Zahl {} ist kleiner als die Geheimzahl, rate weiter ", guess);
+			let warten = [".", ".", "."];
+			for x in 0..3 {
+				print!("{} ", warten[x]);
+				io::stdout().flush().unwrap();
+				lib::pause(800);
+			}
 			let zaehler = zaehler + 1;
 			zahlen_eingabe(secret_number2, namen, zaehler);
 		} else {
@@ -211,7 +223,7 @@ fn winner(secret_number2: String, namen: String, zaehler: i32) {
 	rahmen();
 	
 	println!("\x1B[3m   *** Juhuu, \x1b[94m{}\x1b[0m\x1B[3m, du hast gewonnen!! ***\n\x1b[0m", namen);
-	println!("   Die zu erratende Zahl war: \x1b[93m{}\x1b[0m, und in \x1b[93m{}\x1b[0m Versuch(e) erraten.\n", secret_number2, zaehler);
+	println!("Die zu erratende Zahl war: \x1b[93m{}\x1b[0m, und in \x1b[93m{}\x1b[0m Versuch(e) erraten.\n", secret_number2, zaehler);
 	lib::pause(1000);
 
 	nochmal(namen);
