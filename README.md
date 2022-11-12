@@ -1,4 +1,4 @@
-# RUST guess the number
+# RUST guess the number "Deluxe" Version
 
 Binaries:
 
