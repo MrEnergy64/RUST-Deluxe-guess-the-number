@@ -3,12 +3,10 @@
 Binaries:
 
 Linux:
-	https://github.com/MrEnergy64/RUST-guess-the-number/tree/main/binaries/LINUX
-
--
+- https://github.com/MrEnergy64/RUST-guess-the-number/tree/main/binaries/LINUX
 
 Windows (run in PowerShell UTF-8):
-	https://github.com/MrEnergy64/RUST-guess-the-number/tree/main/binaries/WINDOWS
+- https://github.com/MrEnergy64/RUST-guess-the-number/tree/main/binaries/WINDOWS
 
 
 my first RUST experience
