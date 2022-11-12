@@ -1,4 +1,4 @@
-# guess the number
+# RUST guess the number
 
 my first RUST experience
 
