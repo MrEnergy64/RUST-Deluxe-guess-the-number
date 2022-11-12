@@ -7,7 +7,7 @@ Linux:
 
 -
 
-Windows:
+Windows (run in PowerShell UTF-8):
 	https://github.com/MrEnergy64/RUST-guess-the-number/tree/main/binaries/WINDOWS
 
 
