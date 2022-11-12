@@ -1,5 +1,11 @@
 # RUST guess the number
 
+Binaries:
+
+Linux:
+https://github.com/MrEnergy64/RUST-guess-the-number/tree/main/binaries/LINUX
+
+
 my first RUST experience
 
 a small "guess the number" game, with some RUST solutions for :
