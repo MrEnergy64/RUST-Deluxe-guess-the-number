@@ -4,6 +4,9 @@ Binaries:
 
 Linux:
 	https://github.com/MrEnergy64/RUST-guess-the-number/tree/main/binaries/LINUX
+
+-
+
 Windows:
 	https://github.com/MrEnergy64/RUST-guess-the-number/tree/main/binaries/WINDOWS
 
