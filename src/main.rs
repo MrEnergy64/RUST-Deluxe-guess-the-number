@@ -1,5 +1,14 @@
 
-// use std::{io::{self, Write}, cmp::Ordering, cell::SyncUnsafeCell};
+/// RUST guess-the-number
+/// a little game to demostrate
+/// first steps with RUS programming
+/// language and shows some programming
+/// how to do's
+
+/// Version 1.5 by Norman Wöske
+
+
+
 use std::io::{self, Write};
 use rand::Rng;
 use chrono::prelude::*;
@@ -14,19 +23,29 @@ fn main() {
 fn uhrzeit() {
 	let now: DateTime<Local> = Local::now();
 	println!("	{}", now.format("%a - %e %b %Y  - %T"));
+
 } // end of uhrzeit()
 
 fn rahmen() {
-
 	let str1 = "=";
 	let str2 = "|";
 	lib::set_color("green");
 	println!("\n{}{}{}\n", str2.repeat(1), str1.repeat(44), str2.repeat(1));
 	lib::set_color("reset");
-}  
+
+}  // end of rahmen()
+
+fn warten() {
+	let warten = [".", ".", "."];
+		for x in 0..3 {
+			print!("{} ", warten[x]);
+			io::stdout().flush().unwrap();
+			lib::pause(800);
+		}
+
+} // end of warten()
 
 fn willkommen() {
-	
 	lib::clear_screen();
 	lib::mv_point(0,0);
 
@@ -34,7 +53,7 @@ fn willkommen() {
    	*****************************
    	*    W I L L K O M M E N    *
    	*                           *
-   	* (c) Norman Wöske     V1.4 *
+   	* (c) Norman Wöske     V1.5 *
    	*****************************";
 	
 	rahmen();
@@ -48,7 +67,6 @@ fn willkommen() {
 } // end of willkommen()
 
 fn eingabe_namen() {
-	
 	let mut namen = String::new();
 	rahmen();
 	print!("     Hallo, \x1b[94mSpieler\x1b[0m! Wie ist dein Name?\n\n     Name: ");
@@ -67,7 +85,6 @@ fn eingabe_namen() {
 } // end of eingabe_namen()
 
 fn gaming_time(namen: String) {
-
 	lib::clear_screen();
 	lib::mv_point(0,0);
 
@@ -147,7 +164,6 @@ fn zahlen_eingabe(secret_number2: String, namen: String, zaehler: i32) {
 } // end of zahlen_eingabe()
 
 fn auswertung(secret_number2: String, guess: String, namen: String, zaehler: i32) {
-
 	lib::clear_screen();
 	lib::mv_point(0,0);
 
@@ -180,22 +196,12 @@ fn auswertung(secret_number2: String, guess: String, namen: String, zaehler: i32
 	
 		if guess_int > secret_int {
 			print!("\nDeine Zahl {} ist größer als die Geheimzahl, rate weiter ", guess);
-			let warten = [".", ".", "."];
-			for x in 0..3 {
-				print!("{} ", warten[x]);
-				io::stdout().flush().unwrap();
-				lib::pause(800);
-			}
+			warten();
 			let zaehler = zaehler + 1;
 			zahlen_eingabe(secret_number2, namen, zaehler);
 		} else if  guess_int < secret_int {
 			print!("\nDeine Zahl {} ist kleiner als die Geheimzahl, rate weiter ", guess);
-			let warten = [".", ".", "."];
-			for x in 0..3 {
-				print!("{} ", warten[x]);
-				io::stdout().flush().unwrap();
-				lib::pause(800);
-			}
+			warten();
 			let zaehler = zaehler + 1;
 			zahlen_eingabe(secret_number2, namen, zaehler);
 		} else {
