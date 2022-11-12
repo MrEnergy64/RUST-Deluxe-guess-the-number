@@ -53,6 +53,14 @@ and then import it into the main.rs:
 		- lib::set_color("green");
 		- println!("\n{}{}{}", str2.repeat(1), str1.repeat(44), str2.repeat(1));
 		- lib::set_color("reset");
+
+8. added waiting dors (printout in one line):
+	- let warten = [".", ".", "."];
+		- for x in 0..3 {
+		- print!("{} ", warten[x]);
+		- io::stdout().flush().unwrap();
+		- lib::pause(800);
+	- }
 	
 
 ![guess-the-number-welcome](https://user-images.githubusercontent.com/58075655/200954595-b85cbab8-c640-47a5-8690-b4958023265b.png)
