@@ -54,7 +54,7 @@ and then import it into the main.rs:
 		- println!("\n{}{}{}", str2.repeat(1), str1.repeat(44), str2.repeat(1));
 		- lib::set_color("reset");
 
-8. added waiting dors (printout in one line):
+8. added waiting dots (printout in one line):
 	- let warten = [".", ".", "."];
 		- for x in 0..3 {
 		- print!("{} ", warten[x]);
