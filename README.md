@@ -74,7 +74,8 @@ and then import it into the main.rs:
 
 
 
-![RUST-gues-the-number](https://user-images.githubusercontent.com/58075655/201479113-bc953fd8-2fd9-4514-90a1-05be0124e466.gif)
+![RUST-Deluxe-guess-the-number](https://user-images.githubusercontent.com/58075655/201511823-c1f5fcae-988c-4ed9-a5a1-c58a0bb5f5cd.gif)
+
 
 
 	
