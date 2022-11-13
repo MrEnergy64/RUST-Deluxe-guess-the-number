@@ -2,7 +2,7 @@
 
 Binaries:
 
-Linux:
+Linux (x86_64 only, no aarch):
 - https://github.com/MrEnergy64/RUST-guess-the-number/tree/main/binaries/LINUX
 
 Windows (run in PowerShell UTF-8):
