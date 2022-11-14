@@ -1,7 +1,11 @@
 [package]
-name = "guess-the-number"
-version = "0.1.5"
+name = "number"
+version = "0.1.6"
 edition = "2021"
+
+[lib]
+name = "number"
+path = "src/lib.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -13,6 +17,6 @@ version = "0.20.0"
 default-features = false
 features = ["blt-backend"]
 
-
 [dependencies.chrono]
 version = "0.4"
+
