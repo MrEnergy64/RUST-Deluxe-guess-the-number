@@ -5,19 +5,23 @@
 /// language and shows some programming
 /// how to do's
 
-/// Version 1.5 by Norman Wöske
+/// Version 1.6 by Norman Wöske
 
 
 
 use std::io::{self, Write};
+use std::fs::OpenOptions;
 use rand::Rng;
 use chrono::prelude::*;
+
 extern crate rand;
 mod lib;
 
 
 fn main() {
+
     willkommen();
+    
 } //end of main()
 
 fn uhrzeit() {
@@ -53,7 +57,7 @@ fn willkommen() {
    	*****************************
    	*    W I L L K O M M E N    *
    	*                           *
-   	* (c) Norman Wöske     V1.5 *
+   	* (c) Norman Wöske     V1.6 *
    	*****************************";
 	
 	rahmen();
@@ -61,7 +65,7 @@ fn willkommen() {
 	println!("{}", WILLKOMMEN);
 	lib::set_color("reset");
 	uhrzeit();
-	
+
 	eingabe_namen();
 
 } // end of willkommen()
@@ -228,6 +232,35 @@ fn winner(secret_number2: String, namen: String, zaehler: i32) {
 	uhrzeit();
 	rahmen();
 	
+	let now: DateTime<Local> = Local::now();
+
+	let fp = "results.txt";
+	let b = std::path::Path::new(fp).exists();
+
+	if b == false {
+		let mut w = OpenOptions::new()
+			.create_new(true)
+			.write(true)
+			.append(true)
+			.open("results.txt")
+			.unwrap();
+		if let Err(e) = writeln!(&mut w, "Datum: {}, Name: {}, Gewonnen in {} versuchen.", now.format("%a - %e %b %Y  - %T"), namen, zaehler) {
+			eprintln!("Couldn't write to file: {}", e);
+		}
+	
+			
+	} else {
+		let mut w = OpenOptions::new()
+			.write(true)
+			.append(true)
+			.open("results.txt")
+			.unwrap();
+		if let Err(e) = writeln!(&mut w, "Datum: {}, Name: {}, Gewonnen in {} versuchen.", now.format("%a - %e %b %Y  - %T"), namen, zaehler) {
+			eprintln!("Couldn't write to file: {}", e);
+		}
+					
+	}
+
 	println!("\x1B[3m   *** Juhuu, \x1b[94m{}\x1b[0m\x1B[3m, du hast gewonnen!! ***\n\x1b[0m", namen);
 	println!("Die zu erratende Zahl war: \x1b[93m{}\x1b[0m, und in \x1b[93m{}\x1b[0m Versuch(e) erraten.\n", secret_number2, zaehler);
 	lib::pause(1000);
@@ -253,6 +286,33 @@ fn looser(secret_number2: String, x: String, namen: String) {
 	lib::set_color("reset");
 	uhrzeit();
 	rahmen();
+
+	let now: DateTime<Local> = Local::now();
+
+	let fp = "results.txt";
+	let b = std::path::Path::new(fp).exists();
+
+	if b == false {
+		let mut w = OpenOptions::new()
+			.create_new(true)
+			.write(true)
+			.append(true)
+			.open("results.txt")
+			.unwrap();
+		if let Err(e) = writeln!(&mut w, "Datum: {}, Name: {}, Verloren!!", now.format("%a - %e %b %Y  - %T"), namen) {
+			eprintln!("Couldn't write to file: {}", e);
+		}
+
+	} else {
+		let mut w = OpenOptions::new()
+			.write(true)
+			.append(true)
+			.open("results.txt")
+			.unwrap();
+		if let Err(e) = writeln!(&mut w, "Datum: {}, Name: {}, Verloren!!", now.format("%a - %e %b %Y  - %T"), namen) {
+			eprintln!("Couldn't write to file: {}", e);
+		}
+	}
 
 	println!("\x1B[3m >> Schade, \x1b[94m{}\x1b[0m\x1B[3m, du hast leider verloren. <<\n\x1b[0m", namen);
 	println!("Die zu erratende Zahl war: \x1b[93m{}\x1b[0m, deine letzte Zahl war: \x1b[93m{}\x1b[0m\n", secret_number2, x);
