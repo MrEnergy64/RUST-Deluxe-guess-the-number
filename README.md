@@ -1,4 +1,4 @@
-# RUST guess the number "Deluxe" Version
+# RUST guess the number "Deluxe" Version 1.6
 
 Binaries:
 
@@ -70,7 +70,17 @@ and then import it into the main.rs:
 		- io::stdout().flush().unwrap();
 		- lib::pause(800);
 	- }
-	
+
+9. created file creation part for log guess match results, with date, time, name:
+
+        File: results.txt
+	Datum: Mon - 14 Nov 2022  - 22:57:01, Name: Norman, Verloren!!
+
+  	Datum: Mon - 14 Nov 2022  - 22:58:31, Name: norman, Verloren!!
+
+	Datum: Mon - 14 Nov 2022  - 22:59:10, Name: norman, Gewonnen in 7 versuchen.
+
+
 
 
 
