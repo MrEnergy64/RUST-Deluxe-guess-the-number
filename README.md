@@ -1,4 +1,4 @@
-# RUST guess the number "Deluxe" Version 1.6
+# RUST guess the number "Deluxe" Version 1.7
 
 Binaries:
 
@@ -81,6 +81,7 @@ and then import it into the main.rs:
 	Datum: Mon - 14 Nov 2022  - 22:59:10, Name: norman, Gewonnen in 7 versuchen.
 
 
+10. check for existing results.txt file and ask in the beginning if you would like to see that file.
 
 
 
