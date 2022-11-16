@@ -5,12 +5,13 @@
 /// language and shows some programming
 /// how to do's
 
-/// Version 1.6 by Norman Wöske
+/// Version 1.7 by Norman Wöske
 
 
 
 use std::io::{self, Write};
 use std::fs::OpenOptions;
+use std::fs;
 use rand::Rng;
 use chrono::prelude::*;
 
@@ -57,7 +58,7 @@ fn willkommen() {
    	*****************************
    	*    W I L L K O M M E N    *
    	*                           *
-   	* (c) Norman Wöske     V1.6 *
+   	* (c) Norman Wöske     V1.7 *
    	*****************************";
 	
 	rahmen();
@@ -76,12 +77,46 @@ fn eingabe_namen() {
 	print!("     Hallo, \x1b[94mSpieler\x1b[0m! Wie ist dein Name?\n\n     Name: ");
 	
 	let _ = io::stdout().flush();	
-	 io::stdin()
+	io::stdin()
 		.read_line(&mut namen)
 		.expect("Fehler beim Lesen der Zeile");
 	
 	while namen.ends_with('\n') || namen.ends_with('\r') {
 		namen.pop();
+	}
+
+	let mut protokoll = String::new();
+	print!("\nSchön das du hier bist \x1b[94m{namen}\x1b[0m, möchtest du die Protokolldatei einsehen (1=ja, [enter]=nein)? ");
+
+	let _ = io::stdout().flush();	
+	io::stdin()
+		.read_line(&mut protokoll)
+		.expect("Fehler beim Lesen der Zeile");
+		
+	while protokoll.ends_with('\n') || protokoll.ends_with('\r') {
+			protokoll.pop();
+	}
+
+	if protokoll == "1" {
+		let fp = "results.txt";
+		let b = std::path::Path::new(fp).exists();
+
+		if b == false {
+			println!("\nKeine Protokolldatei Result.txt vorhanden, weiter im Programm..");
+			lib::pause(3000);
+		} else {
+			println!("\n    Letzter Access am ....\n");
+    		let file_path = "results.txt";
+    		println!("Lade Datei... {}\n", file_path);
+
+    		let contents = fs::read_to_string(file_path)
+        		.expect("Etwas ging beim Lesen der Datei schief");
+
+   		 	println!("Protokoll:\n{contents}\n     weiter in 8 Sekunden....");
+
+			lib::pause(8000);
+		}
+
 	}
 
 	gaming_time(namen);
