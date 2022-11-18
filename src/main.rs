@@ -5,7 +5,7 @@
 /// language and shows some programming
 /// how to do's
 
-/// Version 1.7 by Norman Wöske
+/// Version 1.8 by Norman Wöske
 
 
 
@@ -14,16 +14,47 @@ use std::fs::OpenOptions;
 use std::fs;
 use rand::Rng;
 use chrono::prelude::*;
+use std::{thread, time};
 
 extern crate rand;
-mod lib;
-
 
 fn main() {
 
     willkommen();
     
 } //end of main()
+
+
+pub fn set_color(c: &str) {
+        match c {
+                "red"           => print!("\x1b[31m"),
+                "green"         => print!("\x1b[32m"),
+                "yellow"        => print!("\x1b[33m"),
+                "cyan"          => print!("\x1b[36m"),
+                "magenta"       => print!("\x1b[35m"),
+                "reset"         => print!("\x1b[0m"),
+                _           => print!("{} is an invalid color ", c),
+        }
+
+} // end of set_color()
+
+pub fn clear_screen() {
+        print!("{}[2J", 27 as char);
+
+} // end of clear_screen()
+
+pub fn mv_point(line: usize, col: usize) {
+        print!("\x1b[{};{}H", col, line);
+
+} // end of mv_point()
+
+pub fn pause(p: u64) {
+
+        let millis = time::Duration::from_millis(p);
+        thread::sleep(millis);
+
+} // end of pause()
+
 
 fn uhrzeit() {
 	let now: DateTime<Local> = Local::now();
@@ -34,9 +65,9 @@ fn uhrzeit() {
 fn rahmen() {
 	let str1 = "=";
 	let str2 = "|";
-	lib::set_color("green");
+	set_color("green");
 	println!("\n{}{}{}\n", str2.repeat(1), str1.repeat(44), str2.repeat(1));
-	lib::set_color("reset");
+	set_color("reset");
 
 }  // end of rahmen()
 
@@ -45,26 +76,26 @@ fn warten() {
 		for x in 0..3 {
 			print!("{} ", warten[x]);
 			io::stdout().flush().unwrap();
-			lib::pause(800);
+			pause(800);
 		}
 
 } // end of warten()
 
 fn willkommen() {
-	lib::clear_screen();
-	lib::mv_point(0,0);
+	clear_screen();
+	mv_point(0,0);
 
 	const WILLKOMMEN: &str = " 	
    	*****************************
    	*    W I L L K O M M E N    *
    	*                           *
-   	* (c) Norman Wöske     V1.7 *
+   	* (c) Norman Wöske     V1.8 *
    	*****************************";
 	
 	rahmen();
-	lib::set_color("yellow");
+	set_color("yellow");
 	println!("{}", WILLKOMMEN);
-	lib::set_color("reset");
+	set_color("reset");
 	uhrzeit();
 
 	eingabe_namen();
@@ -85,14 +116,15 @@ fn eingabe_namen() {
 		namen.pop();
 	}
 
-	let mut protokoll = String::new();
+	
 	print!("\nSchön das du hier bist \x1b[94m{namen}\x1b[0m, möchtest du die Protokolldatei einsehen (1=ja, [enter]=nein)? ");
 
 	let _ = io::stdout().flush();	
+	let mut protokoll = String::new();
 	io::stdin()
 		.read_line(&mut protokoll)
 		.expect("Fehler beim Lesen der Zeile");
-		
+	
 	while protokoll.ends_with('\n') || protokoll.ends_with('\r') {
 			protokoll.pop();
 	}
@@ -103,8 +135,12 @@ fn eingabe_namen() {
 
 		if b == false {
 			println!("\nKeine Protokolldatei Result.txt vorhanden, weiter im Programm..");
-			lib::pause(3000);
+			pause(3000);
 		} else {
+			clear_screen();
+			mv_point(0,0);
+			rahmen();
+			set_color("yellow");
 			println!("\n    Letzter Access am ....\n");
     		let file_path = "results.txt";
     		println!("Lade Datei... {}\n", file_path);
@@ -112,9 +148,12 @@ fn eingabe_namen() {
     		let contents = fs::read_to_string(file_path)
         		.expect("Etwas ging beim Lesen der Datei schief");
 
-   		 	println!("Protokoll:\n{contents}\n     weiter in 8 Sekunden....");
+   		 	println!("Protokoll:\n{contents}\n     weiter in 8 Sekunden....\n");
+			rahmen();
+			set_color("reset");
+			uhrzeit();
 
-			lib::pause(8000);
+			pause(8000);
 		}
 
 	}
@@ -124,8 +163,8 @@ fn eingabe_namen() {
 } // end of eingabe_namen()
 
 fn gaming_time(namen: String) {
-	lib::clear_screen();
-	lib::mv_point(0,0);
+	clear_screen();
+	mv_point(0,0);
 
 
 	const GAMING: &str = " 	
@@ -136,9 +175,9 @@ fn gaming_time(namen: String) {
    	*****************************";
 
 	rahmen();
-	lib::set_color("yellow");
+	set_color("yellow");
 	println!("{}", GAMING);
-	lib::set_color("reset");
+	set_color("reset");
 	uhrzeit();
 	rahmen();
  	println!("     Hallo \x1b[94m{}\x1b[0m, lass uns ein Spiel spielen...\n", namen);
@@ -148,7 +187,7 @@ fn gaming_time(namen: String) {
 	for x in 0..3 {
 		print!("{} ", warten[x]);
 		io::stdout().flush().unwrap();
-		lib::pause(1500);
+		pause(1500);
 	}
 	
 
@@ -168,8 +207,8 @@ fn zahlenspiel(namen: String) {
 } // end of zahlenspiel()
 
 fn zahlen_eingabe(secret_number2: String, namen: String, zaehler: i32) {
-	lib::clear_screen();
-	lib::mv_point(0,0);
+	clear_screen();
+	mv_point(0,0);
 	
 	const RATEN: &str = "
 	*****************************
@@ -179,13 +218,13 @@ fn zahlen_eingabe(secret_number2: String, namen: String, zaehler: i32) {
  	*****************************";
 
  	rahmen();
- 	lib::set_color("yellow");
+ 	set_color("yellow");
 	println!("{}", RATEN);
-	lib::set_color("reset");
+	set_color("reset");
 	uhrzeit();
-	lib::set_color("magenta");
+	set_color("magenta");
 	println!("\n            Rateversuch {} von 10...", zaehler);
-	lib::set_color("reset");
+	set_color("reset");
 	rahmen();
 	let mut guess = String::new();
  	print!("\x1b[94m{}\x1b[0m, bitte gib deine Zahl zwischen 1-100 ein.\n\n           => : ", namen);
@@ -203,8 +242,8 @@ fn zahlen_eingabe(secret_number2: String, namen: String, zaehler: i32) {
 } // end of zahlen_eingabe()
 
 fn auswertung(secret_number2: String, guess: String, namen: String, zaehler: i32) {
-	lib::clear_screen();
-	lib::mv_point(0,0);
+	clear_screen();
+	mv_point(0,0);
 
 	const AUSWERTUNG: &str = "
 	*****************************
@@ -214,9 +253,9 @@ fn auswertung(secret_number2: String, guess: String, namen: String, zaehler: i32
  	*****************************";
 
 	rahmen();
- 	lib::set_color("yellow");
+ 	set_color("yellow");
 	println!("{}", AUSWERTUNG);
-	lib::set_color("reset");
+	set_color("reset");
 	uhrzeit();
 	rahmen();
 
@@ -250,8 +289,8 @@ fn auswertung(secret_number2: String, guess: String, namen: String, zaehler: i32
 } // end of auswertung()
 
 fn winner(secret_number2: String, namen: String, zaehler: i32) {
-	lib::clear_screen();
-	lib::mv_point(0,0);
+	clear_screen();
+	mv_point(0,0);
 
 	const WINNER: &str = "
 	*****************************
@@ -261,9 +300,9 @@ fn winner(secret_number2: String, namen: String, zaehler: i32) {
 	*****************************";
 
 	rahmen();
-	lib::set_color("yellow");
+	set_color("yellow");
 	println!("{}", WINNER);
-	lib::set_color("reset");
+	set_color("reset");
 	uhrzeit();
 	rahmen();
 	
@@ -298,15 +337,15 @@ fn winner(secret_number2: String, namen: String, zaehler: i32) {
 
 	println!("\x1B[3m   *** Juhuu, \x1b[94m{}\x1b[0m\x1B[3m, du hast gewonnen!! ***\n\x1b[0m", namen);
 	println!("Die zu erratende Zahl war: \x1b[93m{}\x1b[0m, und in \x1b[93m{}\x1b[0m Versuch(e) erraten.\n", secret_number2, zaehler);
-	lib::pause(1000);
+	pause(1000);
 
 	nochmal(namen);
 
 } //end of winner
 
 fn looser(secret_number2: String, x: String, namen: String) {
-	lib::clear_screen();
-	lib::mv_point(0,0);
+	clear_screen();
+	mv_point(0,0);
 
 	const LOSER: &str = "
 	*****************************
@@ -316,9 +355,9 @@ fn looser(secret_number2: String, x: String, namen: String) {
 	*****************************";
 
 	rahmen();
-	lib::set_color("cyan");
+	set_color("cyan");
 	println!("{}", LOSER);
-	lib::set_color("reset");
+	set_color("reset");
 	uhrzeit();
 	rahmen();
 
@@ -351,7 +390,7 @@ fn looser(secret_number2: String, x: String, namen: String) {
 
 	println!("\x1B[3m >> Schade, \x1b[94m{}\x1b[0m\x1B[3m, du hast leider verloren. <<\n\x1b[0m", namen);
 	println!("Die zu erratende Zahl war: \x1b[93m{}\x1b[0m, deine letzte Zahl war: \x1b[93m{}\x1b[0m\n", secret_number2, x);
-	lib::pause(1000);
+	pause(1000);
 
 	nochmal(namen);
 
@@ -368,8 +407,8 @@ fn nochmal(namen: String) {
 	    .expect("Fehler beim Lesen der Zeile");
    	
 	if weiter.trim() == "nein" {
-		lib::clear_screen();
-	 	lib::mv_point(0,0);
+		clear_screen();
+	 	mv_point(0,0);
 		println!("\n\x1b[0mSchade, Goodbye \x1b[94m{}\x1b[0m\n", namen);   		   	
    	} else {
 		println!("Spiel neu starten mit neuem Spieler (schreibe 'ja', ansonsten [enter] für gleichen Spieler) ?");
