@@ -1,4 +1,4 @@
-# RUST guess the number "Deluxe" Version 1.8
+# RUST guess the number "Deluxe" Version 1.9
 
 Binaries:
 
@@ -83,10 +83,11 @@ and then import it into the main.rs:
 
 10. check for existing results.txt file and ask in the beginning if you would like to see that file.
 
+11. included now a mix with new crossterm and ansi ascii sequence
 
+"Note: this is my first experience with RUST, and I am aware of it, that the souce code could be smarter and shorter. But this will be my next step."
 
-![RUST-Deluxe-guess-the-number](https://user-images.githubusercontent.com/58075655/201511823-c1f5fcae-988c-4ed9-a5a1-c58a0bb5f5cd.gif)
-
+![RUST-number](https://user-images.githubusercontent.com/58075655/203064824-09556af0-8109-4fe2-8e3c-604169b4af4c.gif)
 
 
 	
