@@ -5,22 +5,29 @@
 /// language and shows some programming
 /// how to do's
 
-/// Version 1.8 by Norman Wöske
+/// Version 1.9 by Norman Wöske
 
 
 
 use std::io::{self, Write};
+use std::io::stdout;
 use std::fs::OpenOptions;
 use std::fs;
 use rand::Rng;
 use chrono::prelude::*;
 use std::{thread, time};
+use crossterm::{
+	execute, queue,
+	style::{self, Stylize, Color, Print, ResetColor, SetBackgroundColor, SetForegroundColor},
+	cursor, terminal, Result
+};
+
 
 extern crate rand;
 
 fn main() {
 
-    willkommen();
+    willkommen().ok();
     
 } //end of main()
 
@@ -55,20 +62,53 @@ pub fn pause(p: u64) {
 
 } // end of pause()
 
+fn uhrzeit(wo: u16) -> Result<()> {
 
-fn uhrzeit() {
 	let now: DateTime<Local> = Local::now();
-	println!("	{}", now.format("%a - %e %b %Y  - %T"));
+	
+	execute!(
+		stdout(),
+		Print("        "),
+		SetForegroundColor(Color::Yellow),
+		SetBackgroundColor(Color::Blue),
+		cursor::MoveTo(20, wo),
+		Print(now.format("%a - %e %b %Y  - %T")),
+		ResetColor
+	)?;
 
+	Ok(())
+		
 } // end of uhrzeit()
 
-fn rahmen() {
-	let str1 = "=";
-	let str2 = "|";
-	set_color("green");
-	println!("\n{}{}{}\n", str2.repeat(1), str1.repeat(44), str2.repeat(1));
-	set_color("reset");
+fn rahmen2() -> Result<()> {
 
+	let test = "|===========================================|";
+	let mut stdout = stdout();
+
+
+	execute!(stdout, terminal::Clear(terminal::ClearType::All))?;
+
+  	for y in 0..26 {
+  		for x in 0..72 {
+  	    	if (y == 0 || y == 26 - 1) || (x == 0 || x == 72 - 1) {
+  	    		queue!(stdout, cursor::MoveTo(x,y), style::PrintStyledContent( "█".magenta()))?;
+  	    	 }
+         }
+     }
+    execute!(stdout, cursor::MoveTo(12, 2), style::PrintStyledContent( test.green()))?;
+	stdout.flush()?;
+	Ok(())
+}
+
+fn rahmen(wo: u16) -> Result<()> {
+	let test = "|===========================================|";
+	let mut stdout = stdout();
+	
+	execute!(stdout, cursor::MoveTo(12, wo), style::PrintStyledContent( test.green()))?;
+
+	stdout.flush()?;
+	Ok(())
+		
 }  // end of rahmen()
 
 fn warten() {
@@ -76,36 +116,38 @@ fn warten() {
 		for x in 0..3 {
 			print!("{} ", warten[x]);
 			io::stdout().flush().unwrap();
-			pause(800);
+			pause(1000);
 		}
 
 } // end of warten()
 
-fn willkommen() {
-	clear_screen();
-	mv_point(0,0);
+fn willkommen() -> Result<()> {
 
-	const WILLKOMMEN: &str = " 	
-   	*****************************
-   	*    W I L L K O M M E N    *
-   	*                           *
-   	* (c) Norman Wöske     V1.8 *
-   	*****************************";
+	let mut stdout = stdout();
 	
-	rahmen();
-	set_color("yellow");
-	println!("{}", WILLKOMMEN);
-	set_color("reset");
-	uhrzeit();
+	rahmen2().ok();
+	
+	execute!(stdout, cursor::MoveTo(20, 3), style::PrintStyledContent( "*****************************".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 4), style::PrintStyledContent( "*    W I L L K O M M E N    *".yellow()))?;	
+	execute!(stdout, cursor::MoveTo(20, 5), style::PrintStyledContent( "*                           *".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 6), style::PrintStyledContent( "* (c) Norman Wöske     V1.9 *".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 7), style::PrintStyledContent( "*****************************".yellow()))?;
+	uhrzeit(8).ok();
 
-	eingabe_namen();
+	eingabe_namen().ok();
+
+	stdout.flush()?;
+	Ok(())
 
 } // end of willkommen()
 
-fn eingabe_namen() {
+fn eingabe_namen() -> Result<()> {
 	let mut namen = String::new();
-	rahmen();
-	print!("     Hallo, \x1b[94mSpieler\x1b[0m! Wie ist dein Name?\n\n     Name: ");
+	let mut stdout = stdout();
+
+	rahmen(10).ok();
+	execute!(stdout, cursor::MoveTo(16, 12), style::PrintStyledContent( "Hallo, \x1b[94mSpieler\x1b[0m! Wie ist dein Name?".yellow()))?;
+	execute!(stdout, cursor::MoveTo(16, 14), style::PrintStyledContent( "Name: ".yellow()))?;
 	
 	let _ = io::stdout().flush();	
 	io::stdin()
@@ -116,9 +158,11 @@ fn eingabe_namen() {
 		namen.pop();
 	}
 
-	
-	print!("\nSchön das du hier bist \x1b[94m{namen}\x1b[0m, möchtest du die Protokolldatei einsehen (1=ja, [enter]=nein)? ");
 
+	execute!(stdout, cursor::MoveTo(16, 16), style::PrintStyledContent( "Schön das du hier bist ".yellow()))?;
+	println!("\x1b[94m{}\x1b[0m.", namen);
+	execute!(stdout, cursor::MoveTo(8, 18), style::PrintStyledContent( "Möchtest Du dein Log-Datei sehen (1=ja, [enter]=nein) ? ".yellow()))?;
+	
 	let _ = io::stdout().flush();	
 	let mut protokoll = String::new();
 	io::stdin()
@@ -134,64 +178,66 @@ fn eingabe_namen() {
 		let b = std::path::Path::new(fp).exists();
 
 		if b == false {
-			println!("\nKeine Protokolldatei Result.txt vorhanden, weiter im Programm..");
+			execute!(stdout, cursor::MoveTo(4, 20), style::PrintStyledContent( "Keine Protokolldatei Result.txt vorhanden, weiter im Programm..".red()))?;
 			pause(3000);
 		} else {
 			clear_screen();
-			mv_point(0,0);
-			rahmen();
-			set_color("yellow");
-			println!("\n    Letzter Access am ....\n");
+			uhrzeit(2).ok();
+			//mv_point(0,0);
+			rahmen(3).ok();
+			set_color("green");
     		let file_path = "results.txt";
-    		println!("Lade Datei... {}\n", file_path);
-
+    		println!("\n\nLade Protokoll-Datei: {}... \n", file_path);
+			set_color("green");
     		let contents = fs::read_to_string(file_path)
-        		.expect("Etwas ging beim Lesen der Datei schief");
-
+       			.expect("Etwas ging beim Lesen der Datei schief");
+			set_color("yellow");
    		 	println!("Protokoll:\n{contents}\n     weiter in 8 Sekunden....\n");
-			rahmen();
 			set_color("reset");
-			uhrzeit();
 
 			pause(8000);
 		}
 
 	}
 
-	gaming_time(namen);
+	gaming_time(namen).ok();
+
+	stdout.flush()?;
+	Ok(())
 
 } // end of eingabe_namen()
 
-fn gaming_time(namen: String) {
-	clear_screen();
-	mv_point(0,0);
+fn gaming_time(namen: String) -> Result<()> {
 
+	let mut stdout = stdout();
 
-	const GAMING: &str = " 	
-   	*****************************
-   	*    G A M I N G  T I M E   *
-   	*                           *
-   	*                           *
-   	*****************************";
+	rahmen2().ok();
 
-	rahmen();
-	set_color("yellow");
-	println!("{}", GAMING);
-	set_color("reset");
-	uhrzeit();
-	rahmen();
- 	println!("     Hallo \x1b[94m{}\x1b[0m, lass uns ein Spiel spielen...\n", namen);
+	execute!(stdout, cursor::MoveTo(20, 3), style::PrintStyledContent( "*****************************".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 4), style::PrintStyledContent( "*    G A M I N G  T I M E   *".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 5), style::PrintStyledContent( "*                           *".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 6), style::PrintStyledContent( "*                           *".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 7), style::PrintStyledContent( "*****************************".yellow()))?;
+
+	uhrzeit(8).ok();
+	rahmen(10).ok();
+
+	execute!(stdout, cursor::MoveTo(16, 12), style::PrintStyledContent( "Hallo, ".yellow()))?;
+	println!("\x1b[94m{}\x1b[0m....", namen);
+	execute!(stdout, cursor::MoveTo(16, 14), style::PrintStyledContent( "Lass uns ein Spiel spielen....".yellow()))?;
  	
-	print!("     Bei 3 geht es los.... ");
-	let warten = ["1", "2", "3"];
+	execute!(stdout, cursor::MoveTo(16, 16), style::PrintStyledContent( "Bei 3 geht es los....  ".yellow()))?;
+	let warten = [" 1", " 2", " 3"];
 	for x in 0..3 {
-		print!("{} ", warten[x]);
+		execute!(stdout, cursor::MoveTo(37, 16), style::PrintStyledContent( warten[x].blue()))?;
 		io::stdout().flush().unwrap();
 		pause(1500);
 	}
 	
 
 	 zahlenspiel(namen);
+
+	Ok(())
 	
 } //end of gaming_time()
 
@@ -202,32 +248,35 @@ fn zahlenspiel(namen: String) {
 	
 	let secret_number2 = secret_number.to_string();
 
-	zahlen_eingabe(secret_number2, namen, zaehler);
+	zahlen_eingabe(secret_number2, namen, zaehler).ok();
 
 } // end of zahlenspiel()
 
-fn zahlen_eingabe(secret_number2: String, namen: String, zaehler: i32) {
-	clear_screen();
-	mv_point(0,0);
+fn zahlen_eingabe(secret_number2: String, namen: String, zaehler: i32) -> Result<()> {
 	
-	const RATEN: &str = "
-	*****************************
- 	*       Rate die Zahl!      *
- 	*                           *
-	*                           *
- 	*****************************";
+	let mut stdout = stdout();
 
- 	rahmen();
- 	set_color("yellow");
-	println!("{}", RATEN);
+	rahmen2().ok();
+
+	execute!(stdout, cursor::MoveTo(20, 3), style::PrintStyledContent( "*****************************".yellow()))?;	
+	execute!(stdout, cursor::MoveTo(20, 4), style::PrintStyledContent( "*       Rate die Zahl!      *".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 5), style::PrintStyledContent( "*                           *".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 6), style::PrintStyledContent( "*                           *".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 7), style::PrintStyledContent( "*****************************".yellow()))?;
+
+	uhrzeit(8).ok();
+
+	execute!(stdout, cursor::MoveTo(20, 10), style::PrintStyledContent( "Rateversuch ".blue()))?;
+	set_color("yellow");
+	println!("{}", zaehler);
 	set_color("reset");
-	uhrzeit();
-	set_color("magenta");
-	println!("\n            Rateversuch {} von 10...", zaehler);
-	set_color("reset");
-	rahmen();
+	execute!(stdout, cursor::MoveTo(34, 10), style::PrintStyledContent( " von 10...".blue()))?;
+
+	rahmen(12).ok();
 	let mut guess = String::new();
- 	print!("\x1b[94m{}\x1b[0m, bitte gib deine Zahl zwischen 1-100 ein.\n\n           => : ", namen);
+	
+	execute!(stdout, cursor::MoveTo(14, 14), style::PrintStyledContent( "Bitte gib deine Zahl zwischen 1-100 ein: ".yellow()))?;
+		
 	let _ = io::stdout().flush();
  	io::stdin()
 		.read_line(&mut guess)
@@ -237,30 +286,30 @@ fn zahlen_eingabe(secret_number2: String, namen: String, zaehler: i32) {
 		guess.pop();
 	}
 
-	auswertung(secret_number2, guess, namen, zaehler);
+	auswertung(secret_number2, guess, namen, zaehler).ok();
 
+	Ok(())
+	
 } // end of zahlen_eingabe()
 
-fn auswertung(secret_number2: String, guess: String, namen: String, zaehler: i32) {
-	clear_screen();
-	mv_point(0,0);
+fn auswertung(secret_number2: String, guess: String, namen: String, zaehler: i32) -> Result<()>  {
+	
+	let mut stdout = stdout();
 
-	const AUSWERTUNG: &str = "
-	*****************************
- 	*    A U S W E R T U N G    *
- 	*                           *
-	*                           *
- 	*****************************";
+	rahmen2().ok();
 
-	rahmen();
- 	set_color("yellow");
-	println!("{}", AUSWERTUNG);
-	set_color("reset");
-	uhrzeit();
-	rahmen();
+	execute!(stdout, cursor::MoveTo(20, 3), style::PrintStyledContent( "*****************************".yellow()))?;	
+	execute!(stdout, cursor::MoveTo(20, 4), style::PrintStyledContent( "*    A U S W E R T U N G    *".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 5), style::PrintStyledContent( "*                           *".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 6), style::PrintStyledContent( "*                           *".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 7), style::PrintStyledContent( "*****************************".yellow()))?;
+
+	uhrzeit(8).ok();
+	
+	rahmen(10).ok();
 
 	if zaehler >= 10 {
-		looser(secret_number2, guess, namen);
+		looser(secret_number2, guess, namen).ok();
 	} else {
 		let secret_int: u32 = secret_number2
 		.trim()
@@ -273,38 +322,40 @@ fn auswertung(secret_number2: String, guess: String, namen: String, zaehler: i32
 		.expect("Wanted a number"); 
 	
 		if guess_int > secret_int {
-			print!("\nDeine Zahl {} ist größer als die Geheimzahl, rate weiter ", guess);
+			execute!(stdout, cursor::MoveTo(10, 12), style::PrintStyledContent( "Die Geheimzahl ist kleiner als:".yellow()))?;
+			print!(" {} \x1b[33m=> Rate weiter\x1b[0m ", guess);
 			warten();
 			let zaehler = zaehler + 1;
-			zahlen_eingabe(secret_number2, namen, zaehler);
+			zahlen_eingabe(secret_number2, namen, zaehler).ok();
 		} else if  guess_int < secret_int {
-			print!("\nDeine Zahl {} ist kleiner als die Geheimzahl, rate weiter ", guess);
+			execute!(stdout, cursor::MoveTo(10, 12), style::PrintStyledContent( "Die Geheimzahl ist größer als:".yellow()))?;
+			print!(" {} \x1b[33m=> Rate weiter\x1b[0m ", guess);
 			warten();
 			let zaehler = zaehler + 1;
-			zahlen_eingabe(secret_number2, namen, zaehler);
+			zahlen_eingabe(secret_number2, namen, zaehler).ok();
 		} else {
-			winner(secret_number2, namen, zaehler);
+			winner(secret_number2, namen, zaehler).ok();
 		}
-	}	
+		
+	}
+	Ok(())	
 } // end of auswertung()
 
-fn winner(secret_number2: String, namen: String, zaehler: i32) {
-	clear_screen();
-	mv_point(0,0);
+fn winner(secret_number2: String, namen: String, zaehler: i32) -> Result<()>  {
+	
+	let mut stdout = stdout();
 
-	const WINNER: &str = "
-	*****************************
-	*    !!   GEWINNER   !!     *
-	*                           *
-	*           :-)             *
-	*****************************";
+	rahmen2().ok();
 
-	rahmen();
-	set_color("yellow");
-	println!("{}", WINNER);
-	set_color("reset");
-	uhrzeit();
-	rahmen();
+	execute!(stdout, cursor::MoveTo(20, 3), style::PrintStyledContent( "*****************************".yellow()))?;	
+	execute!(stdout, cursor::MoveTo(20, 4), style::PrintStyledContent( "*    !!   GEWINNER   !!     *".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 5), style::PrintStyledContent( "*                           *".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 6), style::PrintStyledContent( "*           :-)             *".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 7), style::PrintStyledContent( "*****************************".yellow()))?;
+	
+	uhrzeit(8).ok();
+	
+	rahmen(10).ok();
 	
 	let now: DateTime<Local> = Local::now();
 
@@ -332,35 +383,36 @@ fn winner(secret_number2: String, namen: String, zaehler: i32) {
 		if let Err(e) = writeln!(&mut w, "Datum: {}, Name: {}, Gewonnen in {} versuchen.", now.format("%a - %e %b %Y  - %T"), namen, zaehler) {
 			eprintln!("Couldn't write to file: {}", e);
 		}
-					
 	}
-
-	println!("\x1B[3m   *** Juhuu, \x1b[94m{}\x1b[0m\x1B[3m, du hast gewonnen!! ***\n\x1b[0m", namen);
-	println!("Die zu erratende Zahl war: \x1b[93m{}\x1b[0m, und in \x1b[93m{}\x1b[0m Versuch(e) erraten.\n", secret_number2, zaehler);
+	execute!(stdout, cursor::MoveTo(15, 12), style::PrintStyledContent( "   *** Juhuu, du hast gewonnen!! ***".yellow()))?;
+	execute!(stdout, cursor::MoveTo(12, 14), style::PrintStyledContent( "Die zu erratende Zahl war: ".yellow()))?;
+	println!("\x1b[36m{}\x1b[0m", secret_number2);
+	execute!(stdout, cursor::MoveTo(12, 15), style::PrintStyledContent( "Und wurde von Dir in: ".yellow()))?;
+	println!("\x1b[36m{}\x1b[0m", zaehler);
+	execute!(stdout, cursor::MoveTo(35, 15), style::PrintStyledContent( " Versuche(e) erraten.".yellow()))?;
 	pause(1000);
 
-	nochmal(namen);
+	nochmal(namen).ok();
 
+	Ok(())
 } //end of winner
 
-fn looser(secret_number2: String, x: String, namen: String) {
-	clear_screen();
-	mv_point(0,0);
+fn looser(secret_number2: String, x: String, namen: String) -> Result<()> {
+	
+	let mut stdout = stdout();
 
-	const LOSER: &str = "
-	*****************************
-	*    !!   VERLOREN   !!     *
-	*                           *
-	*           :-(             *
-	*****************************";
+	rahmen2().ok();
 
-	rahmen();
-	set_color("cyan");
-	println!("{}", LOSER);
-	set_color("reset");
-	uhrzeit();
-	rahmen();
-
+	execute!(stdout, cursor::MoveTo(20, 3), style::PrintStyledContent( "*****************************".yellow()))?;	
+	execute!(stdout, cursor::MoveTo(20, 4), style::PrintStyledContent( "*    !!   VERLOREN   !!     *".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 5), style::PrintStyledContent( "*                           *".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 6), style::PrintStyledContent( "*           :-(             *".yellow()))?;
+	execute!(stdout, cursor::MoveTo(20, 7), style::PrintStyledContent( "*****************************".yellow()))?;
+	
+	uhrzeit(8).ok();
+	
+	rahmen(10).ok();
+	
 	let now: DateTime<Local> = Local::now();
 
 	let fp = "results.txt";
@@ -387,21 +439,29 @@ fn looser(secret_number2: String, x: String, namen: String) {
 			eprintln!("Couldn't write to file: {}", e);
 		}
 	}
-
-	println!("\x1B[3m >> Schade, \x1b[94m{}\x1b[0m\x1B[3m, du hast leider verloren. <<\n\x1b[0m", namen);
-	println!("Die zu erratende Zahl war: \x1b[93m{}\x1b[0m, deine letzte Zahl war: \x1b[93m{}\x1b[0m\n", secret_number2, x);
+	execute!(stdout, cursor::MoveTo(14, 12), style::PrintStyledContent( " Schade, du hast leider verloren: ".yellow()))?;
+	println!("\x1b[36m{}\x1b[0m", namen);
+	execute!(stdout, cursor::MoveTo(12, 14), style::PrintStyledContent( "Die zu erratende Zahl war: ".yellow()))?;
+	println!("\x1b[36m{}\x1b[0m", secret_number2);
+	execute!(stdout, cursor::MoveTo(12, 15), style::PrintStyledContent( "Deine letzte Zahl war: ".yellow()))?;
+	println!("\x1b[36m{}\x1b[0m", x);
 	pause(1000);
 
-	nochmal(namen);
+	nochmal(namen).ok();
+
+	Ok(())
 
 } //end of looser()
 
-fn nochmal(namen: String) {
+fn nochmal(namen: String) -> Result<()>  {
 	let mut weiter = String::new();
 	let mut neuer = String::new();
+	let mut stdout = stdout();
 
-	println!("\n\x1b[94m{}\x1b[0m, möchtest Du nochmal spielen (schreibe 'nein' für beenden, ansonsten [enter] für weiter)?", namen);
-	
+	execute!(stdout, cursor::MoveTo(12, 17), style::PrintStyledContent( "Möchtest Du nochmal spielen ".yellow()))?;
+	println!("\x1b[94m{}\x1b[0m?", namen);
+	execute!(stdout, cursor::MoveTo(2, 19), style::PrintStyledContent( "(schreibe 'nein' für beenden, ansonsten nur [enter] für weiter) ".yellow()))?;
+		
 	io::stdin()
 	    .read_line(&mut weiter)
 	    .expect("Fehler beim Lesen der Zeile");
@@ -411,7 +471,8 @@ fn nochmal(namen: String) {
 	 	mv_point(0,0);
 		println!("\n\x1b[0mSchade, Goodbye \x1b[94m{}\x1b[0m\n", namen);   		   	
    	} else {
-		println!("Spiel neu starten mit neuem Spieler (schreibe 'ja', ansonsten [enter] für gleichen Spieler) ?");
+		execute!(stdout, cursor::MoveTo(12, 21), style::PrintStyledContent( "Spiel neu starten mit neuem Spieler ?".yellow()))?;
+		execute!(stdout, cursor::MoveTo(4, 23), style::PrintStyledContent( "(schreibe 'ja', ansonsten nur [enter] für gleichen Spieler) ? ".yellow()))?;
 		io::stdin()
 			.read_line(&mut neuer)
 	    	.expect("Fehler beim Lesen der Zeile");
@@ -419,7 +480,8 @@ fn nochmal(namen: String) {
 		if neuer.trim() == "ja" {
 			main();
 		} else {
-			gaming_time(namen);
+			gaming_time(namen).ok();
 		}
    	}
+	Ok(())
 } //end of nochmal()
