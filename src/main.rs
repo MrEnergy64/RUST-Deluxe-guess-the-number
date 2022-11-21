@@ -389,7 +389,7 @@ fn winner(secret_number2: String, namen: String, zaehler: i32) -> Result<()>  {
 	println!("\x1b[36m{}\x1b[0m", secret_number2);
 	execute!(stdout, cursor::MoveTo(12, 15), style::PrintStyledContent( "Und wurde von Dir in: ".yellow()))?;
 	println!("\x1b[36m{}\x1b[0m", zaehler);
-	execute!(stdout, cursor::MoveTo(35, 15), style::PrintStyledContent( " Versuche(e) erraten.".yellow()))?;
+	execute!(stdout, cursor::MoveTo(35, 15), style::PrintStyledContent( " Versuch(e) erraten.".yellow()))?;
 	pause(1000);
 
 	nochmal(namen).ok();
