@@ -69,7 +69,7 @@ fn uhrzeit(wo: u16) -> Result<()> {
 	execute!(
 		stdout(),
 		Print("        "),
-		SetForegroundColor(Color::Yellow),
+		SetForegroundColor(Color::Green),
 		SetBackgroundColor(Color::Blue),
 		cursor::MoveTo(20, wo),
 		Print(now.format("%a - %e %b %Y  - %T")),
