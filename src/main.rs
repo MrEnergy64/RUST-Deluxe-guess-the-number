@@ -1,7 +1,7 @@
 
 /// RUST guess-the-number
 /// a little game to demostrate
-/// first steps with RUS programming
+/// first steps with RUST programming
 /// language and shows some programming
 /// how to do's
 
@@ -98,7 +98,8 @@ fn rahmen2() -> Result<()> {
     execute!(stdout, cursor::MoveTo(12, 2), style::PrintStyledContent( test.green()))?;
 	stdout.flush()?;
 	Ok(())
-}
+	
+} // end of rahmen2()
 
 fn rahmen(wo: u16) -> Result<()> {
 	let test = "|===========================================|";
@@ -161,7 +162,7 @@ fn eingabe_namen() -> Result<()> {
 
 	execute!(stdout, cursor::MoveTo(16, 16), style::PrintStyledContent( "Schön das du hier bist ".yellow()))?;
 	println!("\x1b[94m{}\x1b[0m.", namen);
-	execute!(stdout, cursor::MoveTo(8, 18), style::PrintStyledContent( "Möchtest Du dein Log-Datei sehen (1=ja, [enter]=nein) ? ".yellow()))?;
+	execute!(stdout, cursor::MoveTo(8, 18), style::PrintStyledContent( "Möchtest Du deine Log-Datei sehen (1=ja, nur [enter]=nein) ? ".yellow()))?;
 	
 	let _ = io::stdout().flush();	
 	let mut protokoll = String::new();
